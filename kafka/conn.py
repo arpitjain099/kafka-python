@@ -483,9 +483,9 @@ class BrokerConnection(object):
         assert self.config['security_protocol'] in ('SSL', 'SASL_SSL')
         if self._ssl_context is None:
             log.debug('%s: configuring default SSL Context', self)
-            self._ssl_context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)  # pylint: disable=no-member
-            self._ssl_context.options |= ssl.OP_NO_SSLv2  # pylint: disable=no-member
-            self._ssl_context.options |= ssl.OP_NO_SSLv3  # pylint: disable=no-member
+            self._ssl_context = ssl.create_default_context()  # Use default secure settings
+            self._ssl_context.options |= ssl.OP_NO_SSLv2  # pylint: disable=no-member	            
+            self._ssl_context.minimum_version = ssl.TLSVersion.TLSv1_2  # Enforce TLSv1.2 or higher
             self._ssl_context.verify_mode = ssl.CERT_OPTIONAL
             if self.config['ssl_check_hostname']:
                 self._ssl_context.check_hostname = True
